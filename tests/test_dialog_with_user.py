@@ -22,20 +22,23 @@ def test_request_patient_id_when_id_not_integer():
     assert str(err.value) == 'Ошибка ввода. ID пациента должно быть числом (целым, положительным)'
 
 
-fixture_for_parser = [('стоп', CommandType.STOP),
-                      ('Стоп', CommandType.STOP),
-                      ('stop', CommandType.STOP),
-                      ('STOP', CommandType.STOP),
-                      ('остановите программу!', CommandType.UNKNOWN),
-                      ('узнать статус пациента', CommandType.GET_STATUS),
-                      ('get status', CommandType.GET_STATUS),
-                      ('повысить статус пациента', CommandType.STATUS_UP),
-                      ('status up', CommandType.STATUS_UP),
-                      ('понизить статус пациента', CommandType.STATUS_DOWN),
-                      ('status down', CommandType.STATUS_DOWN),
-                      ('рассчитать статистику', CommandType.CALCULATE_STATISTICS),
-                      ('calculate statistics', CommandType.CALCULATE_STATISTICS),
-                      ]
+fixture_for_parser = [
+    ('стоп', CommandType.STOP),
+    ('Стоп', CommandType.STOP),
+    ('stop', CommandType.STOP),
+    ('STOP', CommandType.STOP),
+    ('остановите программу!', CommandType.UNKNOWN),
+    ('узнать статус пациента', CommandType.GET_STATUS),
+    ('get status', CommandType.GET_STATUS),
+    ('повысить статус пациента', CommandType.STATUS_UP),
+    ('status up', CommandType.STATUS_UP),
+    ('понизить статус пациента', CommandType.STATUS_DOWN),
+    ('status down', CommandType.STATUS_DOWN),
+    ('рассчитать статистику', CommandType.CALCULATE_STATISTICS),
+    ('calculate statistics', CommandType.CALCULATE_STATISTICS),
+    ('выписать пациента', CommandType.DISCHARGE_PATIENT),
+    ('discharge patient', CommandType.DISCHARGE_PATIENT),
+]
 
 
 # todo лучше указать два имени "text_command,parsed_command" (без индексов tpl[0])

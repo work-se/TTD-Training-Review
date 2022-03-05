@@ -1,6 +1,6 @@
 import pytest
 
-from exceptions import MinStatusCannotDownError, MaxStatusCannotUpError
+from exceptions import MinStatusCannotDownError, MaxStatusCannotUpError, CantDischargePatientError
 from hospital import Hospital
 from exceptions import PatientNotExistsError
 
@@ -43,6 +43,12 @@ def test_cannot_status_up_for_this_patient():
 def test_can_status_down_for_this_patient():
     hospital = Hospital([1])
     assert hospital.can_status_down_for_this_patient(1)
+
+
+def test_can_discharge_patient():
+    hospital = Hospital([1, 3])
+    assert not hospital.can_discharge_patient(1), 'Нельзя выписать пациента не в статусе "Готов к выписке"'
+    assert hospital.can_discharge_patient(2), 'Нельзя выписать пациента не в статусе "Готов к выписке"'
 
 
 def test_cannot_status_down_for_this_patient():
@@ -90,6 +96,13 @@ def test_discharge_patient_when_patient_not_exists():
     with pytest.raises(PatientNotExistsError) as err:
         hospital.discharge_patient(2)
     assert str(err.value) == 'Ошибка. В больнице нет пациента с таким ID'
+
+
+def test_discharge_patient_with_wrong_status_before_discharge():
+    hospital = Hospital([1, 2, 1])
+    with pytest.raises(CantDischargePatientError) as error:
+        hospital.discharge_patient(2)
+    assert str(error.value) == 'Нельзя выписать пациента не в статусе "Готов к выписке"'
 
 
 def test_get_statistics():

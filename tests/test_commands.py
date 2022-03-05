@@ -1,10 +1,13 @@
 from unittest.mock import MagicMock
 
 from commands import Commands
-from exceptions import PatientIdNotIntegerError, PatientNotExistsError, MinStatusCannotDownError
+from exceptions import (
+    PatientIdNotIntegerError, PatientNotExistsError, MinStatusCannotDownError, CantDischargePatientError
+)
 
 
 def make_commands():
+    # todo: Можно фикстурой сделать, как раз подходит по структуре
     return Commands(hospital=MagicMock(), dialog_with_user=MagicMock())
 
 
@@ -195,3 +198,29 @@ def test_calculate_statistics():
                                                           ' - в статусе "Тяжело болен": 1 чел.\n'
                                                           ' - в статусе "Болен": 3 чел.\n'
                                                           ' - в статусе "Готов к выписке": 2 чел.')
+
+
+def test_discharge_patient():
+    cmd = make_commands()
+    cmd._dialog_with_user.request_patient_id = MagicMock(return_value=1)
+    cmd._hospital.discharge_patient = MagicMock()
+    cmd._dialog_with_user.send_message = MagicMock()
+
+    cmd.discharge_patient()
+
+    cmd._dialog_with_user.request_patient_id.assert_called()
+    cmd._hospital.discharge_patient.assert_called_with(1)
+    cmd._dialog_with_user.send_message.assert_called_with('Пациент выписан из больницы')
+
+
+def test_discharge_patient_with_wrong_status():
+    cmd = make_commands()
+    cmd._dialog_with_user.request_patient_id = MagicMock(return_value=1)
+    cmd._hospital.discharge_patient = MagicMock(side_effect=CantDischargePatientError)
+    cmd._dialog_with_user.send_message = MagicMock()
+
+    cmd.discharge_patient()
+
+    cmd._dialog_with_user.request_patient_id.assert_called()
+    cmd._hospital.discharge_patient.assert_called_with(1)
+    cmd._dialog_with_user.send_message.assert_called_with('Нельзя выписать пациента не в статусе "Готов к выписке"')

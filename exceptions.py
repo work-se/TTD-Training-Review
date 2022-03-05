@@ -17,3 +17,8 @@ class PatientNotExistsError(Exception):
     def __init__(self):
         super().__init__('Ошибка. В больнице нет пациента с таким ID')
 
+
+class CantDischargePatientError(Exception):
+    def __init__(self):
+        super().__init__('Нельзя выписать пациента не в статусе "Готов к выписке"')
+

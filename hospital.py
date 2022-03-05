@@ -1,4 +1,4 @@
-from exceptions import MinStatusCannotDownError, MaxStatusCannotUpError
+from exceptions import MinStatusCannotDownError, MaxStatusCannotUpError, CantDischargePatientError
 from exceptions import PatientNotExistsError
 
 
@@ -45,6 +45,8 @@ class Hospital:
     def discharge_patient(self, patient_id):
         self._verify_patient_exists(patient_id)
         patient_index = patient_id - 1
+        if not self.can_discharge_patient(patient_id):
+            raise CantDischargePatientError
         self._patients_db.pop(patient_index)
 
     def patient_exists(self, patient_id):
@@ -61,3 +63,7 @@ class Hospital:
     def can_status_down_for_this_patient(self, patient_id):
         status = self.get_patient_status_by_id(patient_id)
         return status != "Тяжело болен"
+
+    def can_discharge_patient(self, patient_id):
+        status = self.get_patient_status_by_id(patient_id)
+        return status == "Готов к выписке"

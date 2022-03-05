@@ -18,6 +18,8 @@ class Application:
                 self._commands.status_down()
             elif command == CommandType.CALCULATE_STATISTICS:
                 self._commands.calculate_statistics()
+            elif command == CommandType.DISCHARGE_PATIENT:
+                self._commands.discharge_patient()
             elif command == CommandType.STOP:
                 self._commands.stop()
                 stop = True

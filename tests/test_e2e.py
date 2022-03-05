@@ -13,7 +13,7 @@ def make_application(hospital, console):
 
 
 def test_ordinary_positive_scenario():
-    hospital = Hospital([1, 1, 0, 2, 1])
+    hospital = Hospital([1, 1, 0, 2, 1, 3])
     console = MockConsole()
     console.add_expected_request_and_response('Введите команду: ', 'узнать статус пациента')
     console.add_expected_request_and_response('Введите ID пациента: ', '1')
@@ -24,6 +24,11 @@ def test_ordinary_positive_scenario():
     console.add_expected_request_and_response('Введите команду: ', 'понизить статус пациента')
     console.add_expected_request_and_response('Введите ID пациента: ', '2')
     console.add_expected_output_message('Новый статус пациента: "Тяжело болен"')
+
+    console.add_expected_request_and_response('Введите команду: ', 'выписать пациента')
+    console.add_expected_request_and_response('Введите ID пациента: ', '6')
+    console.add_expected_output_message('Пациент выписан из больницы')
+
     console.add_expected_request_and_response('Введите команду: ', 'рассчитать статистику')
     console.add_expected_output_message('Статистика по статусам:' +
                                         '\n - в статусе "Тяжело болен": 2 чел.' +
@@ -51,7 +56,7 @@ def test_unknown_command():
 
 
 def test_boundary_cases():
-    hospital = Hospital([0, 3, 1, 3])
+    hospital = Hospital([0, 3, 1, 3, 0])
     console = MockConsole()
     console.add_expected_request_and_response('Введите команду: ', 'понизить статус пациента')
     console.add_expected_request_and_response('Введите ID пациента: ', '1')
@@ -64,13 +69,18 @@ def test_boundary_cases():
     console.add_expected_request_and_response('Введите ID пациента: ', '3')
     console.add_expected_request_and_response('Желаете этого клиента выписать? (да/нет) ', 'нет')
     console.add_expected_output_message('Пациент остался в статусе "Готов к выписке"')
+
+    console.add_expected_request_and_response('Введите команду: ', 'выписать пациента')
+    console.add_expected_request_and_response('Введите ID пациента: ', '4')
+    console.add_expected_output_message('Нельзя выписать пациента не в статусе "Готов к выписке"')
+
     console.add_expected_request_and_response('Введите команду: ', 'стоп')
     console.add_expected_output_message('Сеанс завершён.')
     app = make_application(hospital, console)
 
     app.main()
 
-    assert hospital._patients_db == [0, 1, 3]
+    assert hospital._patients_db == [0, 1, 3, 0]
 
 
 def test_cases_of_invalid_data_entry():
